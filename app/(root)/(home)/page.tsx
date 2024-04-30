@@ -56,14 +56,11 @@ async function Home() {
           ))
         ) : (
           <NoResult
+            description=" Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
             title="There's no questions to show"
             link="/ask-question"
             linkTitle="Ask a Question"
-          >
-            Be the first to break the silence! 🚀 Ask a Question and kickstart
-            the discussion. our query could be the next big thing others learn
-            from. Get involved! 💡
-          </NoResult>
+          />
         )}
       </div>
     </>

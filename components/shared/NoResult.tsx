@@ -6,10 +6,10 @@ interface Props {
   title: string;
   link: string;
   linkTitle: string;
-  children: string;
+  description: string;
 }
 
-function NoResult({ title, link, linkTitle, children }: Props) {
+function NoResult({ title, link, linkTitle, description }: Props) {
   return (
     <div className="mt-10 flex w-full flex-col items-center justify-center">
       <Image
@@ -29,7 +29,7 @@ function NoResult({ title, link, linkTitle, children }: Props) {
 
       <h2 className="h2-bold text-dark200_light900 mt-8">{title}</h2>
       <p className="body-regular text-dark500_light700 my-3.5 max-w-md text-center leading-5">
-        {children}
+        {description}
       </p>
 
       <Link href={link}>
