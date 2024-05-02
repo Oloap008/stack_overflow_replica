@@ -21,7 +21,7 @@ function Theme() {
         <MenubarTrigger className="focus:bg-light-900 data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200">
           {mode === "light" ? (
             <Image
-              src="assets/icons/sun.svg"
+              src="/assets/icons/sun.svg"
               alt="sun"
               width={20}
               height={20}
@@ -29,7 +29,7 @@ function Theme() {
             />
           ) : (
             <Image
-              src="assets/icons/moon.svg"
+              src="/assets/icons/moon.svg"
               alt="sun"
               width={20}
               height={20}

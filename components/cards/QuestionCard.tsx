@@ -38,7 +38,7 @@ function QuestionCard({
           <span className="subtle-regular text-dark400_light700 line-clamp-1 flex sm:hidden">
             {getTimestamp(createdAt)}
           </span>
-          <Link href={`/questions/${_id}`}>
+          <Link href={`/question/${_id}`}>
             <h3 className="sm:h3-semibold base-semibold text-dark200_light900 line-clamp-1 flex-1">
               {title}
             </h3>
@@ -77,7 +77,7 @@ function QuestionCard({
           imgUrl="/assets/icons/message.svg"
           alt="envelope"
           value={formatNumber(answers.length)}
-          title=" Votes"
+          title=" Answers"
           textStyles="small-medium text-dark400_light800"
         />
 
@@ -85,7 +85,7 @@ function QuestionCard({
           imgUrl="/assets/icons/eye.svg"
           alt="eye"
           value={formatNumber(views)}
-          title=" Votes"
+          title=" Views"
           textStyles="small-medium text-dark400_light800"
         />
       </div>

@@ -56,7 +56,7 @@ const popularTags = [
 
 function RightSideBar() {
   return (
-    <section className="custom-scrollbar background-light900_dark200 light-border sticky right-0 flex h-screen w-[350px] flex-col gap-6 overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
+    <section className="custom-scrollbar background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[350px] flex-col gap-6 overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden">
       <div>
         <h3 className="h3-bold text-dark200_light900">Top Questions</h3>
         <div className="mt-7 grid gap-[30px]">
@@ -70,7 +70,7 @@ function RightSideBar() {
                 {question.title}
               </p>
               <Image
-                src="assets/icons/chevron-right.svg"
+                src="/assets/icons/chevron-right.svg"
                 alt="Chevron right icon"
                 width={20}
                 height={20}
