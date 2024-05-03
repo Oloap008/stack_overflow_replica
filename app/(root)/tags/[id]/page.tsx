@@ -1,26 +1,22 @@
-import React from "react";
-import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
-import Filter from "@/components/shared/Filter";
-import { QuestionFilters } from "@/constants/filters";
-import { auth } from "@clerk/nextjs/server";
-import { getSavedQuestionsByUserId } from "@/lib/actions/user.action";
+import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
+import { IQuestion } from "@/database/question.model";
+import { getQuestionByTagId } from "@/lib/actions/tag.actions";
+import { URLProps } from "@/types";
 
-async function Collection() {
-  const { userId } = auth();
-
-  if (!userId) return null;
-
-  const { questions } = await getSavedQuestionsByUserId({
-    clerkId: userId,
+async function TagDetails({ params, searchParams }: URLProps) {
+  const { tagTitle, questions } = await getQuestionByTagId({
+    tagId: params.id,
+    page: 1,
+    searchQuery: searchParams.q,
   });
 
   return (
     <>
-      <h1 className="h1-bold text-dark100_light900">Saved Question</h1>
+      <h1 className="h1-bold text-dark100_light900">{tagTitle}</h1>
 
-      <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
+      <div className="mt-11 w-full">
         <LocalSearchBar
           placeholder="Search question...."
           route="/"
@@ -28,16 +24,11 @@ async function Collection() {
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
         />
-
-        <Filter
-          filters={QuestionFilters}
-          otherClasses="min-h-[56px] sm:min-w-[170px]"
-        />
       </div>
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
-          questions.map((question: any) => (
+          questions.map((question: IQuestion) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
@@ -53,7 +44,7 @@ async function Collection() {
         ) : (
           <NoResult
             description=" Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡"
-            title="There's no saved questions to show"
+            title="There's no tag questions to show"
             link="/ask-question"
             linkTitle="Ask a Question"
           />
@@ -63,4 +54,4 @@ async function Collection() {
   );
 }
 
-export default Collection;
+export default TagDetails;

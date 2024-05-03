@@ -38,17 +38,12 @@ function Votes({
   const router = useRouter();
 
   // Keep this state for now
-  useEffect(
-    function () {
-      if (type === "Question") {
-        viewQuestion({
-          questionId: JSON.parse(itemId),
-          userId: userId ? JSON.parse(userId) : undefined,
-        });
-      }
-    },
-    [itemId, userId, pathname, router, type]
-  );
+  useEffect(() => {
+    viewQuestion({
+      questionId: JSON.parse(itemId),
+      userId: userId ? JSON.parse(userId) : undefined,
+    });
+  }, [itemId, userId, pathname, router]);
 
   async function handleSave() {
     await toggleSaveQuestion({
