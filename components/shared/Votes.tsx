@@ -158,8 +158,8 @@ function Votes({
               ? "/assets/icons/star-filled.svg"
               : "/assets/icons/star-red.svg"
           }
-          height={18}
           width={18}
+          height={18}
           alt="star"
           className="cursor-pointer"
           onClick={handleSave}

@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { intlFormatDistance } from "date-fns";
+import { format, intlFormatDistance } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -36,4 +36,8 @@ export function formatNumber(num: number): string {
   }
 
   return num.toString();
+}
+
+export function getJoinedDate(date: Date): string {
+  return format(date, "MMMM y");
 }

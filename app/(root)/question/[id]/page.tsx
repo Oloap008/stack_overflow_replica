@@ -7,12 +7,13 @@ import Votes from "@/components/shared/Votes";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { formatNumber, getTimestamp } from "@/lib/utils";
+import { URLProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
 // Next.js gives searchParams and params out of the box
-async function QuestionDetail({ params, searchParams }) {
+async function QuestionDetail({ params, searchParams }: URLProps) {
   const question = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth();
 

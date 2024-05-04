@@ -5,6 +5,7 @@ import { formatNumber, getTimestamp } from "@/lib/utils";
 
 interface QuestionProps {
   _id: string;
+  clerkId?: string | undefined | null;
   title: string;
   tags: {
     _id: string;
@@ -23,6 +24,7 @@ interface QuestionProps {
 
 function QuestionCard({
   _id,
+  clerkId,
   title,
   tags,
   author,

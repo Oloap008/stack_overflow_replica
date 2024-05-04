@@ -1,13 +1,15 @@
 "use client";
+
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { sidebarLinks } from "@/constants";
 
 function LeftSideBar() {
+  const { userId } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -17,6 +19,14 @@ function LeftSideBar() {
           const isActive =
             (pathname.includes(item.route) && item.route.length > 1) ||
             pathname === item.route;
+
+          if (item.route === "/profile") {
+            if (userId) {
+              item.route = `${item.route}/${userId}`;
+            } else {
+              return null;
+            }
+          }
 
           return (
             <Link
@@ -32,7 +42,7 @@ function LeftSideBar() {
                 className={`${isActive ? "" : "invert-colors"}`}
               />
               <p
-                className={`${isActive ? "base-bold" : "base-medium"} max-lg:hidden`}
+                className={`${isActive ? "base-bold" : "base-medium"} max-lg:hidden `}
               >
                 {item.label}
               </p>
