@@ -2,6 +2,7 @@ import { formatNumber, getTimestamp } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
 import Metric from "../shared/Metric";
+import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface Props {
   clerkId: string | undefined | null;
@@ -29,7 +30,6 @@ function AnswerCard({
   createdAt,
 }: Props) {
   const showActionButtons = clerkId && clerkId === author.clerkId;
-  console.log(author);
 
   return (
     <div className="card-wrapper rounded-[10px] px-11 py-9">
@@ -47,8 +47,7 @@ function AnswerCard({
 
         <SignedIn>
           {showActionButtons && (
-            // <EditDeleteAction type="Answer" itemId={JSON.stringify(_id)} />
-            <>ICON</>
+            <EditDeleteAction type="Answer" itemId={JSON.stringify(_id)} />
           )}
         </SignedIn>
       </div>

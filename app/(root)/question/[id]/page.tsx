@@ -29,7 +29,7 @@ async function QuestionDetail({ params, searchParams }: URLProps) {
         <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
           <Link
             href={`/profile/${question.author.clerkId}`}
-            className="flex items-center justify-start"
+            className="flex items-center justify-start gap-2"
           >
             <Image
               src={question.author.picture}
