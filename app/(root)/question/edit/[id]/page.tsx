@@ -5,7 +5,7 @@ import { ParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-async function EditQuestion({ params, searchParams }: ParamsProps) {
+async function EditQuestion({ params }: ParamsProps) {
   const { id } = params;
   const { userId } = auth();
 
