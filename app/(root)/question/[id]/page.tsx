@@ -103,6 +103,8 @@ async function QuestionDetail({ params, searchParams }: URLProps) {
         questionId={question._id}
         userId={mongoUser._id}
         totalAnswers={question.answers.length}
+        filter={searchParams?.filter}
+        page={searchParams?.page}
       />
 
       <Answer

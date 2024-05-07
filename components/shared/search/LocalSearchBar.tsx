@@ -52,7 +52,7 @@ function LocalSearchBar({
 
       return () => clearTimeout(delayDebounceFn);
     },
-    [search, router, searchParams]
+    [search, router, searchParams, pathname, route]
   );
 
   return (
