@@ -3,10 +3,13 @@ import Filter from "@/components/shared/Filter";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-async function Community() {
-  const result = await getAllUsers({});
+async function Community({ searchParams }: SearchParamsProps) {
+  const result = await getAllUsers({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
@@ -34,7 +37,7 @@ async function Community() {
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
             <p>No users yet</p>
             <Link href="/sign-up" className="mt-2 font-bold text-accent-blue">
-              Joing to be the first!
+              Join to be the first!
             </Link>
           </div>
         )}

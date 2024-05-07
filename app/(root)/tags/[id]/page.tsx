@@ -19,7 +19,7 @@ async function TagDetails({ params, searchParams }: URLProps) {
       <div className="mt-11 w-full">
         <LocalSearchBar
           placeholder="Search question...."
-          route="/"
+          route={`/tags/${params.id}`}
           otherClasses="flex-1"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"

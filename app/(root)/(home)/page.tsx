@@ -8,9 +8,12 @@ import Filter from "@/components/shared/Filter";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
 
-async function Home() {
-  const { questions } = await getQuestions({});
+async function Home({ searchParams }: SearchParamsProps) {
+  const { questions } = await getQuestions({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
