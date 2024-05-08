@@ -7,17 +7,21 @@ import { QuestionFilters } from "@/constants/filters";
 import { auth } from "@clerk/nextjs/server";
 import { getSavedQuestionsByUserId } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
 
   if (!userId) return null;
 
-  const { questions } = await getSavedQuestionsByUserId({
+  const { questions, isNext } = await getSavedQuestionsByUserId({
     clerkId: userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
+
+  console.log(isNext);
 
   return (
     <>
@@ -61,6 +65,15 @@ async function Collection({ searchParams }: SearchParamsProps) {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+
+      <div className="mt-10 flex flex-col">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={isNext}
+        />
+
+        {/* <PaginationV2 /> */}
       </div>
     </>
   );
