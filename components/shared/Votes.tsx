@@ -12,7 +12,6 @@ import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { useEffect } from "react";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import { undefined } from "zod";
-import { SignIn } from "@clerk/nextjs";
 
 interface Props {
   type: string;
