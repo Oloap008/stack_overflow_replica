@@ -187,7 +187,8 @@ function Question({
                       "undo redo | " +
                       "codesample | bold italic forecolor | alignleft aligncenter | " +
                       "alignright alignjustify | bullist numlist ",
-                    content_style: "body { font-family:Inter; font-size:16px }",
+                    content_style:
+                      "body: { font-family:Inter; font-size:16px }",
                     skin: mode === "dark" ? "oxide-dark" : "oxide",
                     content_css: mode === "dark" ? "dark" : "light",
                   }}
