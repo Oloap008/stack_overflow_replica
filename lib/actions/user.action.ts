@@ -183,13 +183,9 @@ export async function getSavedQuestionsByUserId(
   try {
     connectToDatabase();
 
-<<<<<<< HEAD
-    const { clerkId, searchQuery } = params;
-=======
     const { clerkId, page = 1, pageSize = 20, filter, searchQuery } = params;
 
     const skipAmount = (page - 1) * pageSize;
->>>>>>> reputation
 
     const query: FilterQuery<typeof Question> = searchQuery
       ? { title: { $regex: new RegExp(searchQuery, "i") } }
