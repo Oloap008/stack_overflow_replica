@@ -12,6 +12,7 @@ import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { useEffect } from "react";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import { undefined } from "zod";
+import { SignIn } from "@clerk/nextjs";
 
 interface Props {
   type: string;
@@ -108,6 +109,8 @@ function Votes({
     }
   }
 
+  if (!userId) return null;
+
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">
@@ -153,13 +156,13 @@ function Votes({
       </div>
       {type === "Question" && (
         <Image
+          width={18}
+          height={18}
           src={
             hasSaved
               ? "/assets/icons/star-filled.svg"
               : "/assets/icons/star-red.svg"
           }
-          height={18}
-          width={18}
           alt="star"
           className="cursor-pointer"
           onClick={handleSave}

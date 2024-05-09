@@ -29,7 +29,7 @@ async function QuestionDetail({ params, searchParams }: URLProps) {
         <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
           <Link
             href={`/profile/${question.author.clerkId}`}
-            className="flex items-center justify-start"
+            className="flex items-center justify-start gap-2"
           >
             <Image
               src={question.author.picture}
@@ -46,11 +46,11 @@ async function QuestionDetail({ params, searchParams }: URLProps) {
             <Votes
               type="Question"
               itemId={JSON.stringify(question._id)}
-              userId={JSON.stringify(mongoUser._id)}
+              userId={JSON.stringify(mongoUser?._id)}
               upvotes={question.upvotes.length}
               downvotes={question.downvotes.length}
-              hasUpvoted={question.upvotes.includes(mongoUser._id)}
-              hasDownvoted={question.downvotes.includes(mongoUser._id)}
+              hasUpvoted={question.upvotes.includes(mongoUser?._id)}
+              hasDownvoted={question.downvotes.includes(mongoUser?._id)}
               hasSaved={mongoUser?.saved.includes(question._id)}
             />
           </div>
@@ -101,14 +101,16 @@ async function QuestionDetail({ params, searchParams }: URLProps) {
 
       <AllAnswers
         questionId={question._id}
-        userId={mongoUser._id}
+        userId={mongoUser?._id}
         totalAnswers={question.answers.length}
+        filter={searchParams?.filter}
+        page={searchParams?.page ? +searchParams.page : 1}
       />
 
       <Answer
         question={question.content}
         questionId={JSON.stringify(question._id)}
-        authorId={JSON.stringify(mongoUser._id)}
+        authorId={JSON.stringify(mongoUser?._id)}
       />
     </>
   );
