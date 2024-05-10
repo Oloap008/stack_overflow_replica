@@ -172,7 +172,19 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       throw new Error("Question not found");
     }
 
-    // TODO: Increment author's reputation
+    if (userId !== question.author.toString()) {
+      await User.findByIdAndUpdate(userId, {
+        $inc: {
+          reputation: hasUpvoted ? -1 : !hasUpvoted && hasDownvoted ? 0 : 1,
+        },
+      });
+
+      await User.findByIdAndUpdate(question.author, {
+        $inc: {
+          reputation: hasUpvoted ? -10 : !hasUpvoted && hasDownvoted ? 20 : 10,
+        },
+      });
+    }
 
     revalidatePath(path);
   } catch (error) {
@@ -206,7 +218,24 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
 
     if (!question) throw new Error("Question not found.");
 
-    // TODO: Increment author's reputation
+    console.log(hasUpvoted, hasDownvoted);
+
+    if (userId !== question.author.toString()) {
+      await User.findByIdAndUpdate(userId, {
+        $inc: {
+          reputation: hasDownvoted ? -1 : hasUpvoted && !hasDownvoted ? 0 : 1,
+        },
+      });
+      await User.findByIdAndUpdate(question.author, {
+        $inc: {
+          reputation: hasDownvoted
+            ? 10
+            : hasUpvoted && !hasDownvoted
+              ? -20
+              : -10,
+        },
+      });
+    }
 
     revalidatePath(path);
   } catch (error) {
