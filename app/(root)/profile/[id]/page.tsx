@@ -14,9 +14,10 @@ import Link from "next/link";
 
 async function ProfilePage({ params, searchParams }: URLProps) {
   const { userId: clerkId } = auth();
-  const { user, totalQuestions, totalAnswers } = await getUserInfo({
-    userId: params.id,
-  });
+  const { user, totalQuestions, totalAnswers, badgeCounts, reputation } =
+    await getUserInfo({
+      userId: params.id,
+    });
 
   return (
     <>
@@ -78,7 +79,12 @@ async function ProfilePage({ params, searchParams }: URLProps) {
         </div>
       </div>
 
-      <Stats totalQuestions={totalQuestions} totalAnswers={totalAnswers} />
+      <Stats
+        reputation={reputation}
+        totalQuestions={totalQuestions}
+        totalAnswers={totalAnswers}
+        badges={badgeCounts}
+      />
 
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
