@@ -12,7 +12,7 @@ import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { useEffect } from "react";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import { undefined } from "zod";
-import { SignIn } from "@clerk/nextjs";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type: string;
@@ -47,16 +47,30 @@ function Votes({
   }, [itemId, userId, pathname, router]);
 
   async function handleSave() {
+    if (!userId) {
+      return toast({
+        title: `Question ${!hasSaved ? "Saved in" : "Removed from"} your collection`,
+        variant: !hasSaved ? "default" : "destructive",
+      });
+    }
+
     await toggleSaveQuestion({
       questionId: JSON.parse(itemId),
       userId: JSON.parse(userId),
       path: pathname,
     });
+
+    toast({
+      title: "Question successfully saved",
+    });
   }
 
   async function handleVote(action: string) {
     if (!userId) {
-      return;
+      return toast({
+        title: `Question ${!hasSaved ? "Saved in" : "Removed from"} your collection`,
+        variant: !hasSaved ? "default" : "destructive",
+      });
     }
 
     if (action === "upvote") {
@@ -80,8 +94,10 @@ function Votes({
         });
       }
 
-      // TODO: Show a toast message
-      return;
+      return toast({
+        title: `Upvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
+      });
     }
 
     if (action === "downvote") {
@@ -105,7 +121,10 @@ function Votes({
         });
       }
 
-      // TODO: Show a toast message
+      return toast({
+        title: `Downvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasDownvoted ? "default" : "destructive",
+      });
     }
   }
 

@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 // import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   question: string;
@@ -53,7 +54,17 @@ function Answer({ question, questionId, authorId }: Props) {
 
         editor.setContent("");
       }
+
+      return toast({
+        title: "Your answer is successfully submitted.",
+        variant: "destructive",
+      });
     } catch (error) {
+      toast({
+        title:
+          "Looks like there was error trying to submit your answer. Please try again.",
+        variant: "destructive",
+      });
       console.log(error);
     }
   }

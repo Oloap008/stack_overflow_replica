@@ -17,6 +17,7 @@ import { Textarea } from "../ui/textarea";
 import { ProfileSchema } from "@/lib/validations";
 import { usePathname, useRouter } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.action";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   clerkId: string;
@@ -54,8 +55,16 @@ function Profile({ clerkId, user }: Props) {
         path,
       });
 
+      toast({
+        title: "Successfully updated your profile.",
+      });
+
       router.back();
     } catch (error) {
+      toast({
+        title:
+          "Looks like there was error trying to update your profile. Please try again.",
+      });
       console.log(error);
     }
   }
@@ -166,10 +175,10 @@ function Profile({ clerkId, user }: Props) {
           )}
         />
 
-        <div className="mt-7 flex justify-end">
+        <div className=" mt-7 flex justify-end">
           <Button
             type="submit"
-            className="primary-gradient w-fit"
+            className="primary-gradient w-fit text-light-900"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? "Saving..." : "Save"}

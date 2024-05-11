@@ -22,6 +22,7 @@ import Image from "next/image";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   mongoUserId: string;
@@ -66,6 +67,10 @@ function Question({
           path: pathname,
         });
         router.push("/");
+
+        return toast({
+          title: "Your question has successfully been made.",
+        });
       } else {
         await editQuestion({
           questionId: parsedQuestionDetails._id,
@@ -74,9 +79,17 @@ function Question({
           path: pathname,
         });
         router.push(`/question/${parsedQuestionDetails._id}`);
+
+        return toast({
+          title: "Your question has successfully been editted.",
+        });
       }
     } catch (err) {
       console.log(values);
+      toast({
+        title: `Looks like there was error trying to ${type} a question. Please try again.`,
+        variant: "destructive",
+      });
     }
   }
 
