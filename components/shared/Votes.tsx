@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { formatNumber } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   downvoteQuestion,
   upvoteQuestion,
@@ -11,12 +11,12 @@ import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { toggleSaveQuestion } from "@/lib/actions/user.action";
 import { useEffect } from "react";
 import { viewQuestion } from "@/lib/actions/interaction.action";
-import { undefined } from "zod";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type: string;
   itemId: string;
-  userId: string;
+  userId: string | undefined;
   upvotes: number;
   downvotes: number;
   hasUpvoted: boolean;
@@ -35,27 +35,36 @@ function Votes({
   hasSaved,
 }: Props) {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
   // Keep this state for now
-  useEffect(() => {
-    viewQuestion({
-      questionId: JSON.parse(itemId),
-      userId: userId ? JSON.parse(userId) : undefined,
-    });
-  }, [itemId, userId, pathname, router]);
 
   async function handleSave() {
+    if (!userId) {
+      return toast({
+        title: `Invalid action!`,
+        description: "You must be logged in to be able to save a question.",
+      });
+    }
+
     await toggleSaveQuestion({
       questionId: JSON.parse(itemId),
       userId: JSON.parse(userId),
       path: pathname,
     });
+
+    toast({
+      title: "Question successfully saved",
+    });
   }
 
   async function handleVote(action: string) {
     if (!userId) {
-      return;
+      return toast({
+        title: `Invalid action!`,
+        description:
+          "You must be logged in to be able to upvote or downvote a question.",
+      });
     }
 
     if (action === "upvote") {
@@ -79,8 +88,10 @@ function Votes({
         });
       }
 
-      // TODO: Show a toast message
-      return;
+      return toast({
+        title: `Upvote ${!hasUpvoted ? "Successful" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
+      });
     }
 
     if (action === "downvote") {
@@ -104,11 +115,23 @@ function Votes({
         });
       }
 
-      // TODO: Show a toast message
+      return toast({
+        title: `Downvote ${!hasDownvoted ? "Successful" : "Removed"}`,
+        variant: !hasDownvoted ? "default" : "destructive",
+      });
     }
   }
 
-  if (!userId) return null;
+  useEffect(() => {
+    if (type === "Question") {
+      viewQuestion({
+        questionId: JSON.parse(itemId),
+        userId: userId ? JSON.parse(userId) : undefined,
+      });
+    }
+  }, [itemId, userId, type]);
+
+  // if (!userId) return null;
 
   return (
     <div className="flex gap-5">

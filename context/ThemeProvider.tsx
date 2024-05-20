@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "@/components/ui/use-toast";
 import React, {
   createContext,
   useCallback,
@@ -30,7 +31,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setMode("light");
       document.documentElement.classList.remove("dark");
     }
-  }, []);
+
+    toast({
+      title: `Switch to ${mode} mode`,
+    });
+  }, [mode]);
 
   useEffect(
     function () {

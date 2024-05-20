@@ -22,6 +22,7 @@ import Image from "next/image";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   mongoUserId: string;
@@ -66,6 +67,10 @@ function Question({
           path: pathname,
         });
         router.push("/");
+
+        return toast({
+          title: "Your question has successfully been posted.",
+        });
       } else {
         await editQuestion({
           questionId: parsedQuestionDetails._id,
@@ -74,9 +79,16 @@ function Question({
           path: pathname,
         });
         router.push(`/question/${parsedQuestionDetails._id}`);
+
+        return toast({
+          title: "Your question has successfully been editted.",
+        });
       }
     } catch (err) {
-      console.log(values);
+      toast({
+        title: `Looks like there was error trying to ${type} a question. Please try again.`,
+        variant: "destructive",
+      });
     }
   }
 
@@ -88,7 +100,7 @@ function Question({
       e.preventDefault();
 
       const tagInput = e.target as HTMLInputElement;
-      const tagValue = tagInput.value.trim();
+      const tagValue = tagInput.value.trim().toLowerCase();
 
       if (tagValue !== "") {
         if (tagValue.length > 15) {
@@ -103,7 +115,10 @@ function Question({
           tagInput.value = "";
           form.clearErrors("tags");
         } else {
-          form.trigger();
+          return form.setError("tags", {
+            type: "required",
+            message: "Tag has alread been added.",
+          });
         }
       }
     }

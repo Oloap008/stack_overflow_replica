@@ -17,6 +17,7 @@ import { Textarea } from "../ui/textarea";
 import { ProfileSchema } from "@/lib/validations";
 import { usePathname, useRouter } from "next/navigation";
 import { updateUser } from "@/lib/actions/user.action";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   clerkId: string;
@@ -54,8 +55,16 @@ function Profile({ clerkId, user }: Props) {
         path,
       });
 
+      toast({
+        title: "Successfully updated your profile.",
+      });
+
       router.back();
     } catch (error) {
+      toast({
+        title:
+          "Looks like there was error trying to update your profile. Please try again.",
+      });
       console.log(error);
     }
   }
@@ -71,7 +80,7 @@ function Profile({ clerkId, user }: Props) {
           name="name"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Name <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
@@ -79,7 +88,7 @@ function Profile({ clerkId, user }: Props) {
                   disabled={form.formState.isSubmitting}
                   placeholder="Your name"
                   {...field}
-                  className="no-focus paragraph-regular light-border-2 background-light900_dark300 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular light-border-2 background-light800_dark300 text-dark300_light700 min-h-[56px] border"
                 />
               </FormControl>
               <FormMessage />
@@ -92,7 +101,7 @@ function Profile({ clerkId, user }: Props) {
           name="username"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
                 Username <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl>
@@ -100,7 +109,7 @@ function Profile({ clerkId, user }: Props) {
                   disabled={form.formState.isSubmitting}
                   placeholder="Your username"
                   {...field}
-                  className="no-focus paragraph-regular light-border-2 background-light900_dark300 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular light-border-2 background-light800_dark300 text-dark300_light700 min-h-[56px] border"
                 />
               </FormControl>
               <FormMessage />
@@ -113,14 +122,16 @@ function Profile({ clerkId, user }: Props) {
           name="portfolioWebsite"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Portfolio Link</FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
+                Portfolio Link
+              </FormLabel>
               <FormControl>
                 <Input
                   disabled={form.formState.isSubmitting}
                   type="url"
                   placeholder="Your portfolio URL"
                   {...field}
-                  className="no-focus paragraph-regular light-border-2 background-light900_dark300 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular light-border-2 background-light800_dark300 text-dark300_light700 min-h-[56px] border"
                 />
               </FormControl>
               <FormMessage />
@@ -133,13 +144,15 @@ function Profile({ clerkId, user }: Props) {
           name="location"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Location</FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
+                Location
+              </FormLabel>
               <FormControl>
                 <Input
                   disabled={form.formState.isSubmitting}
                   placeholder="Where are you from?"
                   {...field}
-                  className="no-focus paragraph-regular light-border-2 background-light900_dark300 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular light-border-2 background-light800_dark300 text-dark300_light700 min-h-[56px] border"
                 />
               </FormControl>
               <FormMessage />
@@ -152,13 +165,15 @@ function Profile({ clerkId, user }: Props) {
           name="bio"
           render={({ field }) => (
             <FormItem className="space-y-3.5">
-              <FormLabel>Bio</FormLabel>
+              <FormLabel className="paragraph-semibold text-dark400_light800">
+                Bio
+              </FormLabel>
               <FormControl>
                 <Textarea
                   disabled={form.formState.isSubmitting}
                   placeholder="What's special about you?"
                   {...field}
-                  className="no-focus paragraph-regular light-border-2 background-light900_dark300 text-dark300_light700 min-h-[56px] border"
+                  className="no-focus paragraph-regular light-border-2 background-light800_dark300 text-dark300_light700 min-h-[56px] border"
                 />
               </FormControl>
               <FormMessage />
@@ -166,10 +181,10 @@ function Profile({ clerkId, user }: Props) {
           )}
         />
 
-        <div className="mt-7 flex justify-end">
+        <div className=" mt-7 flex justify-end">
           <Button
             type="submit"
-            className="primary-gradient w-fit"
+            className="primary-gradient w-fit text-light-900"
             disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? "Saving..." : "Save"}

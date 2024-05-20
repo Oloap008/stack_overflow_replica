@@ -11,6 +11,7 @@ import {
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/database/interaction.model";
+import User from "@/database/user.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -21,9 +22,21 @@ export async function createAnswer(params: CreateAnswerParams) {
     const newAnswer = await Answer.create({ content, author, question });
 
     // Add the answer to the question's answer array
-    await Question.findByIdAndUpdate(question, {
+    const questionObject = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     });
+
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: newAnswer._id,
+      tags: questionObject.tags,
+    });
+
+    if (author !== questionObject.author.toString()) {
+      await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
+    }
 
     revalidatePath(path);
   } catch (error) {
@@ -101,7 +114,19 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
 
     if (!answer) throw new Error("Answer not found.");
 
-    // TODO: Increment author's reputation
+    if (userId !== answer.author.toString()) {
+      await User.findByIdAndUpdate(userId, {
+        $inc: {
+          reputation: hasUpvoted ? -2 : !hasUpvoted && hasDownvoted ? 0 : 2,
+        },
+      });
+
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: {
+          reputation: hasUpvoted ? -10 : !hasUpvoted && hasDownvoted ? 20 : 10,
+        },
+      });
+    }
 
     revalidatePath(path);
   } catch (error) {
@@ -135,7 +160,23 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
 
     if (!answer) throw new Error("Answer not found.");
 
-    // TODO: Increment author's reputation
+    if (userId !== answer.author.toString()) {
+      await User.findByIdAndUpdate(userId, {
+        $inc: {
+          reputation: hasDownvoted ? -2 : hasUpvoted && !hasDownvoted ? 0 : 2,
+        },
+      });
+
+      await User.findByIdAndUpdate(answer.author, {
+        $inc: {
+          reputation: hasDownvoted
+            ? 10
+            : hasUpvoted && !hasDownvoted
+              ? -20
+              : -10,
+        },
+      });
+    }
 
     revalidatePath(path);
   } catch (error) {

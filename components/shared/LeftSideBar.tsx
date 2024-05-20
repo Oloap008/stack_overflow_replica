@@ -7,13 +7,14 @@ import Link from "next/link";
 import { SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { sidebarLinks } from "@/constants";
+import LeftSideBarLink from "./LeftSideBarLink";
 
 function LeftSideBar() {
   const { userId } = useAuth();
   const pathname = usePathname();
 
   return (
-    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 flex h-screen w-fit flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
+    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 flex h-screen w-fit flex-col justify-between overflow-y-auto border-r p-6 pb-5 pt-32 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
       <div className="flex flex-1 flex-col gap-6">
         {sidebarLinks.map((item) => {
           const isActive =
@@ -21,48 +22,55 @@ function LeftSideBar() {
             pathname === item.route;
 
           if (item.route === "/profile") {
-            if (userId) {
-              item.route = `${item.route}/${userId}`;
-            } else {
-              return null;
-            }
+            return (
+              <SignedIn key={item.route}>
+                <LeftSideBarLink
+                  route={`${item.route}/${userId}`}
+                  isActive={isActive}
+                  imgURL={item.imgURL}
+                  label={item.label}
+                />
+              </SignedIn>
+            );
+            // if (userId) {
+            //   console.log(userId);
+            //   item.route = `${item.route}/${userId}`;
+            // } else {
+            //   return null;
+            // }
           }
 
           return (
-            <Link
-              href={item.route}
+            <LeftSideBarLink
               key={item.route}
-              className={`${isActive ? "primary-gradient rounded-lg text-light-900" : "text-dark300_light900"} flex items-center justify-start gap-4 bg-transparent p-4`}
-            >
-              <Image
-                src={item.imgURL}
-                width={20}
-                height={20}
-                alt="logo"
-                className={`${isActive ? "" : "invert-colors"}`}
-              />
-              <p
-                className={`${isActive ? "base-bold" : "base-medium"} max-lg:hidden `}
-              >
-                {item.label}
-              </p>
-            </Link>
+              route={item.route}
+              isActive={isActive}
+              imgURL={item.imgURL}
+              label={item.label}
+            />
+            // <Link
+            //   href={item.route}
+            //   key={item.route}
+            //   className={`${isActive ? "primary-gradient rounded-lg text-light-900" : "text-dark300_light900"} flex items-center justify-start gap-4 bg-transparent p-4`}
+            // >
+            //   <Image
+            //     src={item.imgURL}
+            //     width={20}
+            //     height={20}
+            //     alt="logo"
+            //     className={`${isActive ? "" : "invert-colors"}`}
+            //   />
+            //   <p
+            //     className={`${isActive ? "base-bold" : "base-medium"} max-lg:hidden `}
+            //   >
+            //     {item.label}
+            //   </p>
+            // </Link>
           );
         })}
       </div>
 
       <div className="flex flex-col gap-2">
-        <SignedIn>
-          <Link href="/">
-            <Image
-              src="assets/icons/au.svg"
-              alt="icon"
-              height={20}
-              width={20}
-            />
-          </Link>
-        </SignedIn>
-
         <SignedOut>
           <Link href="/sign-in">
             <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">

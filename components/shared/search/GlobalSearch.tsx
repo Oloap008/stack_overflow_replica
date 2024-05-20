@@ -71,7 +71,7 @@ function GlobalSearch() {
       className="relative w-full max-w-[600px] max-lg:hidden"
       ref={searchContainerRef}
     >
-      <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4">
+      <div className="background-light800_darkgradient relative flex min-h-[56px] grow items-center gap-1 rounded-xl px-4 max-lg:min-h-6">
         <Image
           src="/assets/icons/search.svg"
           alt="search"
@@ -89,7 +89,7 @@ function GlobalSearch() {
             if (!isOpen) setIsOpen(true);
             if (e.target.value === "" && isOpen) setIsOpen(false);
           }}
-          className="paragraph-regular no-focus placeholder background-light800_darkgradient text-dark400_light700 border-none shadow-none outline-none"
+          className="paragraph-regular no-focus placeholder text-dark400_light700 border-none bg-transparent shadow-none outline-none"
         />
       </div>
 

@@ -7,17 +7,40 @@ import NoResult from "@/components/shared/NoResult";
 import Filter from "@/components/shared/Filter";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
-import Pagination from "@/components/shared/Pagination";
-// import PaginationV2 from "@/components/shared/PaginationV2";
+import { auth } from "@clerk/nextjs/server";
+// import Pagination from "@/components/shared/Pagination";
+import PaginationV2 from "@/components/shared/PaginationV2";
 
 async function Home({ searchParams }: SearchParamsProps) {
-  const { questions, isNext } = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+  const { userId } = auth();
+  let result;
+
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+        totalQuestions: 0,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
 
   return (
     <>
@@ -47,8 +70,8 @@ async function Home({ searchParams }: SearchParamsProps) {
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
@@ -72,12 +95,16 @@ async function Home({ searchParams }: SearchParamsProps) {
       </div>
 
       <div className="mt-10 flex flex-col">
-        <Pagination
+        {/* <Pagination
           pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={isNext}
-        />
+          isNext={result.isNext}
+        /> */}
 
-        {/* <PaginationV2 /> */}
+        <PaginationV2
+          numOfResults={result.totalQuestions}
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

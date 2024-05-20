@@ -17,6 +17,10 @@ import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
+import { BadgeCriteriaType } from "@/types";
+import { assignBadges } from "../utils";
+import { PAGE_SIZE } from "@/constants";
 
 export async function getUserById(params: any) {
   try {
@@ -83,9 +87,17 @@ export async function deleteUser(params: DeleteUserParams) {
     //   "_id"
     // );
 
+    // for (const id of userQuestionsIds) {
+    //   await Tag.updateMany({ questions: id }, { $pull: { questions: id } });
+    // }
     // delete user questions
     await Question.deleteMany({ author: user._id });
-
+    // await Answer.deleteMany({ author: user._id });
+    await Interaction.deleteMany({ user: user._id });
+    // await Tag.updateMany(
+    //   { followers: user._id },
+    //   { $pull: { followers: user._id } }
+    // );
     // TODO: delete user answers, comments, etc.
 
     // Finally, delete user
@@ -141,7 +153,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     const isNext = totalUsers > skipAmount + users.length;
 
-    return { users, isNext };
+    return { users, isNext, totalUsers };
   } catch (error) {
     console.log(error);
     throw error;
@@ -183,7 +195,13 @@ export async function getSavedQuestionsByUserId(
   try {
     connectToDatabase();
 
-    const { clerkId, page = 1, pageSize = 20, filter, searchQuery } = params;
+    const {
+      clerkId,
+      page = 1,
+      pageSize = PAGE_SIZE,
+      filter,
+      searchQuery,
+    } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -238,7 +256,11 @@ export async function getSavedQuestionsByUserId(
     const isNext =
       totalSavedQuestions.length > skipAmount + savedQuestions.length;
 
-    return { questions: savedQuestions, isNext };
+    return {
+      questions: savedQuestions,
+      isNext,
+      totalSavedQuestions: totalSavedQuestions.length,
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -258,7 +280,74 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user._id });
 
-    return { user, totalAnswers, totalQuestions };
+    const [questionUpvotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: "$upvotes" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    const [answerUpvotes] = await Answer.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: "$upvotes" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    const [questionViews] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $group: {
+          _id: null,
+          totalViews: { $sum: "$views" },
+        },
+      },
+    ]);
+
+    const criteria = [
+      { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
+      { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answerUpvotes?.totalUpvotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionViews?.totalViews || 0,
+      },
+    ];
+
+    const badgeCounts = assignBadges({ criteria });
+
+    return {
+      user,
+      totalAnswers,
+      totalQuestions,
+      badgeCounts,
+      reputation: user.reputation,
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -284,7 +373,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
 
     const isNext = totalQuestions > skipAmount + userQuestions.length;
 
-    return { totalQuestions, userQuestions, isNext };
+    return { userQuestions, isNext, totalQuestions };
   } catch (error) {
     console.log(error);
     throw error;
@@ -310,7 +399,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
 
     const isNext = totalAnswers > skipAmount + userAnswers.length;
 
-    return { totalAnswers, userAnswers, isNext };
+    return { userAnswers, isNext, totalAnswers };
   } catch (error) {
     console.log(error);
     throw error;

@@ -108,7 +108,6 @@ async function QuestionDetail({ params, searchParams }: URLProps) {
       />
 
       <Answer
-        question={question.content}
         questionId={JSON.stringify(question._id)}
         authorId={JSON.stringify(mongoUser?._id)}
       />

@@ -1,9 +1,11 @@
 import AnswersTab from "@/components/shared/AnswersTab";
 import ProfileLink from "@/components/shared/ProfileLink";
 import QuestionsTab from "@/components/shared/QuestionsTab";
+import RenderTag from "@/components/shared/RenderTag";
 import Stats from "@/components/shared/Stats";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getTopInteractedTags } from "@/lib/actions/tag.actions";
 import { getUserInfo } from "@/lib/actions/user.action";
 import { getJoinedDate } from "@/lib/utils";
 import { URLProps } from "@/types";
@@ -14,9 +16,11 @@ import Link from "next/link";
 
 async function ProfilePage({ params, searchParams }: URLProps) {
   const { userId: clerkId } = auth();
-  const { user, totalQuestions, totalAnswers } = await getUserInfo({
-    userId: params.id,
-  });
+  const { user, totalQuestions, totalAnswers, badgeCounts, reputation } =
+    await getUserInfo({
+      userId: params.id,
+    });
+  const topInteractedTags = await getTopInteractedTags({ userId: user._id });
 
   return (
     <>
@@ -78,7 +82,12 @@ async function ProfilePage({ params, searchParams }: URLProps) {
         </div>
       </div>
 
-      <Stats totalQuestions={totalQuestions} totalAnswers={totalAnswers} />
+      <Stats
+        reputation={reputation}
+        totalQuestions={totalQuestions}
+        totalAnswers={totalAnswers}
+        badges={badgeCounts}
+      />
 
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
@@ -90,7 +99,10 @@ async function ProfilePage({ params, searchParams }: URLProps) {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <QuestionsTab
               searchParams={searchParams}
               clerkId={clerkId}
@@ -98,7 +110,7 @@ async function ProfilePage({ params, searchParams }: URLProps) {
             />
           </TabsContent>
 
-          <TabsContent value="answers">
+          <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswersTab
               searchParams={searchParams}
               clerkId={clerkId}
@@ -106,6 +118,21 @@ async function ProfilePage({ params, searchParams }: URLProps) {
             />
           </TabsContent>
         </Tabs>
+
+        <div className=" min-w-[278px]">
+          <h3 className="h3-bold text-dark200_light900">Top Tags</h3>
+          <div className="mt-7 grid gap-4">
+            {topInteractedTags.map((tag) => (
+              <RenderTag
+                key={tag.tagId}
+                _id={tag.tagId}
+                name={tag.name}
+                totalQuestions={tag.count}
+                showCount
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

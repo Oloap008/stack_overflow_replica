@@ -15,7 +15,10 @@ interface Props {
 }
 
 async function UserCard({ user }: Props) {
-  const interactedTags = await getTopInteractedTags({ userId: user._id });
+  const interactedTags = await getTopInteractedTags({
+    userId: user._id,
+    limit: 3,
+  });
 
   return (
     <div className="shadow-light100_darknone w-full max-xs:min-w-full xs:w-[260px]">
@@ -26,7 +29,7 @@ async function UserCard({ user }: Props) {
             alt="user profile picture"
             width={100}
             height={100}
-            className="rounded-full"
+            className="mx-auto rounded-full"
           />
           <div className="mt-4 text-center">
             <h3 className="h3-bold text-dark200_light900 line-clamp-1">
@@ -42,11 +45,11 @@ async function UserCard({ user }: Props) {
           {interactedTags.length > 0 ? (
             <div className="flex items-center gap-2">
               {interactedTags.map((tag) => (
-                <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
+                <RenderTag key={tag.tagId} _id={tag.tagId} name={tag.name} />
               ))}
             </div>
           ) : (
-            <Badge>No tags yet</Badge>
+            <Badge className="text-dark500_light700">No tags yet</Badge>
           )}
         </div>
       </article>

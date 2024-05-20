@@ -10,12 +10,13 @@ import {
 import Tag, { ITag } from "@/database/tag.model";
 import { FilterQuery } from "mongoose";
 import Question from "@/database/question.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
     connectToDatabase();
 
-    const { userId } = params;
+    const { userId, limit } = params;
 
     const user = await User.findById(userId);
 
@@ -24,11 +25,52 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     // Find interactions for the user and group by tags...
     // Interaction...
 
-    return [
-      { _id: "1", name: "HTML" },
-      { _id: "2", name: "CSS" },
-      { _id: "3", name: "REACT" },
-    ];
+    const topInteractedTags = await Interaction.aggregate([
+      {
+        $match: { user: userId },
+      },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "tags",
+          foreignField: "_id",
+          as: "tags",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          tag: "$tags",
+        },
+      },
+      {
+        $unwind: "$tag",
+      },
+      {
+        $group: {
+          _id: { id: "$tag._id", name: "$tag.name" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          tagId: "$_id.id",
+          name: "$_id.name",
+          count: 1,
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+      {
+        $limit: limit || 10,
+      },
+    ]);
+
+    console.log(topInteractedTags);
+
+    return topInteractedTags;
   } catch (error) {
     console.log(error);
     throw error;
@@ -43,7 +85,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     const skipAmount = (page - 1) * pageSize;
 
-    const query: FilterQuery<typeof Tag> = {};
+    const query: FilterQuery<typeof Tag> = { questions: { $ne: [] } };
 
     if (searchQuery) {
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
@@ -53,7 +95,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     switch (filter) {
       case "popular":
-        sortOptions = { questions: -1 };
+        sortOptions = { questions: 1 };
         break;
       case "recent":
         sortOptions = { createdAt: -1 };
@@ -77,7 +119,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 
     const isNext = totalTags > skipAmount + tags.length;
 
-    return { tags, isNext };
+    return { tags, isNext, totalTags };
   } catch (error) {
     console.log(error);
     throw error;
@@ -120,7 +162,12 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
 
     const isNext = tagTotalQuestions.length > skipAmout + questions.length;
 
-    return { tagTitle: tag.name, questions, isNext };
+    return {
+      tagTitle: tag.name,
+      questions,
+      isNext,
+      tagTotalQuestions: tagTotalQuestions.length,
+    };
   } catch (error) {
     console.log(error);
     throw error;
@@ -132,7 +179,17 @@ export async function getTopPopularTags() {
     connectToDatabase();
 
     const popularTags = await Tag.aggregate([
-      { $project: { name: 1, totalQuestions: { $size: "$questions" } } },
+      {
+        $match: {
+          questions: { $ne: [] },
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          totalQuestions: { $size: "$questions" },
+        },
+      },
       { $sort: { totalQuestions: -1 } },
       { $limit: 5 },
     ]);
