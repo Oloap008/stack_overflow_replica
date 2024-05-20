@@ -83,21 +83,21 @@ export async function deleteUser(params: DeleteUserParams) {
     // and questions, answers, comments, etc.
 
     // get user question ids
-    // const userQuestionsIds = await Question.find({ author: user._id }).distinct(
-    //   "_id"
-    // );
+    const userQuestionsIds = await Question.find({ author: user._id }).distinct(
+      "_id"
+    );
 
-    // for (const id of userQuestionsIds) {
-    //   await Tag.updateMany({ questions: id }, { $pull: { questions: id } });
-    // }
+    for (const id of userQuestionsIds) {
+      await Tag.updateMany({ questions: id }, { $pull: { questions: id } });
+    }
     // delete user questions
     await Question.deleteMany({ author: user._id });
-    // await Answer.deleteMany({ author: user._id });
+    await Answer.deleteMany({ author: user._id });
     await Interaction.deleteMany({ user: user._id });
-    // await Tag.updateMany(
-    //   { followers: user._id },
-    //   { $pull: { followers: user._id } }
-    // );
+    await Tag.updateMany(
+      { followers: user._id },
+      { $pull: { followers: user._id } }
+    );
     // TODO: delete user answers, comments, etc.
 
     // Finally, delete user
