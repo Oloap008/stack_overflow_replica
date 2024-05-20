@@ -13,6 +13,7 @@ A simple space for developers to ask and answer questions, and communicate with 
 ## Technology Stack
 
 - Next.js
+- Typescript
 - Tailwind CSS
 - Shadcn/ui
 - MongoDB
