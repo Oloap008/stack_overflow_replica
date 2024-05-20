@@ -69,7 +69,7 @@ function Question({
         router.push("/");
 
         return toast({
-          title: "Your question has successfully been made.",
+          title: "Your question has successfully been posted.",
         });
       } else {
         await editQuestion({
@@ -85,7 +85,6 @@ function Question({
         });
       }
     } catch (err) {
-      console.log(values);
       toast({
         title: `Looks like there was error trying to ${type} a question. Please try again.`,
         variant: "destructive",
@@ -101,7 +100,7 @@ function Question({
       e.preventDefault();
 
       const tagInput = e.target as HTMLInputElement;
-      const tagValue = tagInput.value.trim();
+      const tagValue = tagInput.value.trim().toLowerCase();
 
       if (tagValue !== "") {
         if (tagValue.length > 15) {
@@ -116,7 +115,10 @@ function Question({
           tagInput.value = "";
           form.clearErrors("tags");
         } else {
-          form.trigger();
+          return form.setError("tags", {
+            type: "required",
+            message: "Tag has alread been added.",
+          });
         }
       }
     }

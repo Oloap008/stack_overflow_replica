@@ -21,13 +21,13 @@ import { usePathname } from "next/navigation";
 import { toast } from "../ui/use-toast";
 
 interface Props {
-  question: string;
   questionId: string;
-  authorId: string;
+  authorId: string | undefined;
 }
 
-function Answer({ question, questionId, authorId }: Props) {
+function Answer({ questionId, authorId }: Props) {
   // const [isSubmittingAI, setIsSubmittingAI] = useState(false);
+
   const pathname = usePathname();
   const { mode } = useTheme();
   const editorRef = useRef(null);
@@ -40,6 +40,8 @@ function Answer({ question, questionId, authorId }: Props) {
 
   async function handleCreateAnswer(values: z.infer<typeof AnswerSchema>) {
     try {
+      if (!authorId) throw new Error();
+
       await createAnswer({
         content: values.answer,
         author: JSON.parse(authorId),
@@ -56,14 +58,13 @@ function Answer({ question, questionId, authorId }: Props) {
       }
 
       return toast({
-        title: "Your answer is successfully submitted.",
+        title: "Your answer has successfully been posted.",
         variant: "destructive",
       });
     } catch (error) {
       toast({
-        title:
-          "Looks like there was error trying to submit your answer. Please try again.",
-        variant: "destructive",
+        title: `Invalid action!`,
+        description: "You must be logged in to submit an answer to a question",
       });
       console.log(error);
     }

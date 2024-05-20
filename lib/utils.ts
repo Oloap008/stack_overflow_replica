@@ -53,7 +53,6 @@ interface UrlQueryParams {
 
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
   const currentUrl = qs.parse(params);
-  console.log(currentUrl);
 
   currentUrl[key] = value;
 
@@ -97,9 +96,9 @@ interface BadgeParam {
 
 export function assignBadges(params: BadgeParam) {
   const badgeCounts: BadgeCounts = {
-    GOLD: 0,
-    SILVER: 0,
     BRONZE: 0,
+    SILVER: 0,
+    GOLD: 0,
   };
 
   const { criteria } = params;

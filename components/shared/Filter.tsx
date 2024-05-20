@@ -49,10 +49,14 @@ function Filter({ filters, otherClasses, containerClasses }: Props) {
             />
           </div>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="text-dark500_light700 small-regular border-none bg-light-900 dark:bg-dark-300">
           <SelectGroup>
             {filters.map((filter) => (
-              <SelectItem value={filter.value} key={filter.value}>
+              <SelectItem
+                value={filter.value}
+                key={filter.value}
+                className="cursor-pointer focus:bg-light-800 dark:focus:bg-dark-400"
+              >
                 {filter.name}
               </SelectItem>
             ))}

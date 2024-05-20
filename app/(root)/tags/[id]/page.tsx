@@ -1,17 +1,18 @@
 import QuestionCard from "@/components/cards/QuestionCard";
 import NoResult from "@/components/shared/NoResult";
-import Pagination from "@/components/shared/Pagination";
+// import Pagination from "@/components/shared/Pagination";
+import PaginationV2 from "@/components/shared/PaginationV2";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
-import { IQuestion } from "@/database/question.model";
 import { getQuestionByTagId } from "@/lib/actions/tag.actions";
 import { URLProps } from "@/types";
 
 async function TagDetails({ params, searchParams }: URLProps) {
-  const { tagTitle, questions, isNext } = await getQuestionByTagId({
-    tagId: params.id,
-    page: searchParams.page ? +searchParams.page : 1,
-    searchQuery: searchParams.q,
-  });
+  const { tagTitle, questions, isNext, tagTotalQuestions } =
+    await getQuestionByTagId({
+      tagId: params.id,
+      page: searchParams.page ? +searchParams.page : 1,
+      searchQuery: searchParams.q,
+    });
 
   return (
     <>
@@ -29,7 +30,7 @@ async function TagDetails({ params, searchParams }: URLProps) {
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {questions.length > 0 ? (
-          questions.map((question: IQuestion) => (
+          questions.map((question: any) => (
             <QuestionCard
               key={question._id}
               _id={question._id}
@@ -53,12 +54,16 @@ async function TagDetails({ params, searchParams }: URLProps) {
       </div>
 
       <div className="mt-10 flex flex-col">
-        <Pagination
+        {/* <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={isNext}
+        /> */}
+
+        <PaginationV2
+          numOfResults={tagTotalQuestions}
           pageNumber={searchParams?.page ? +searchParams.page : 1}
           isNext={isNext}
         />
-
-        {/* <PaginationV2 /> */}
       </div>
     </>
   );

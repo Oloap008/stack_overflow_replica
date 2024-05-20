@@ -21,7 +21,9 @@ function ProfileLink({ imgUrl, title, href }: Props) {
           {title}
         </Link>
       ) : (
-        <p className="paragraph-medium text-dark400_light700">{title}</p>
+        <p className="paragraph-medium text-dark400_light700 translate-y-px">
+          {title}
+        </p>
       )}
     </div>
   );

@@ -17,14 +17,8 @@ export interface IQuestion extends Document {
 
 // Notice how the "type" is in caps
 const QuestionsSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
+  title: { type: String, required: true },
+  content: { type: String, required: true },
   // Array of type Schema.Types.ObjectId and a reference to a Tag model
   tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
   views: { type: Number, default: 0 },

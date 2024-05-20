@@ -1,14 +1,15 @@
 import UserCard from "@/components/cards/UserCard";
 import Filter from "@/components/shared/Filter";
-import Pagination from "@/components/shared/Pagination";
+import PaginationV2 from "@/components/shared/PaginationV2";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
+// import Pagination from "@/components/shared/Pagination";
 
 async function Community({ searchParams }: SearchParamsProps) {
-  const { users, isNext } = await getAllUsers({
+  const { users, isNext, totalUsers } = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
@@ -47,12 +48,16 @@ async function Community({ searchParams }: SearchParamsProps) {
       </section>
 
       <div className="mt-10 flex flex-col">
-        <Pagination
+        {/* <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={isNext}
+        /> */}
+
+        <PaginationV2
+          numOfResults={totalUsers}
           pageNumber={searchParams?.page ? +searchParams.page : 1}
           isNext={isNext}
         />
-
-        {/* <PaginationV2 /> */}
       </div>
     </>
   );
