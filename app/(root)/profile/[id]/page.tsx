@@ -89,7 +89,7 @@ async function ProfilePage({ params, searchParams }: URLProps) {
         badges={badgeCounts}
       />
 
-      <div className="mt-10 flex gap-10">
+      <div className="mt-10 flex gap-10 max-lg:flex-col-reverse">
         <Tabs defaultValue="top-posts" className="flex-1">
           <TabsList className="background-light800_dark400 min-h-[42px] p-1">
             <TabsTrigger value="top-posts" className="tab">

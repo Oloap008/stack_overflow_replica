@@ -68,8 +68,6 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
       },
     ]);
 
-    console.log(topInteractedTags);
-
     return topInteractedTags;
   } catch (error) {
     console.log(error);
